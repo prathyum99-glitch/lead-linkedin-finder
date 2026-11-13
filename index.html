@@ -6,249 +6,292 @@
 <title>Lead LinkedIn Finder</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Plus+Jakarta+Sans:wght@600;700;800&family=Source+Sans+3:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-  /* Layout idea: one narrow working column. Lead details on top, then a ranked list of
-     searches, most precise first. Each search is a row: what it uses, the query, its buttons. */
+  /* Layout idea: blue header band, then two columns on desktop. Lead form on the left and
+     always in view, ranked searches on the right as white cards. Light theme only, by choice. */
   :root {
-    --paper: #f3f5f2;
-    --panel: #ffffff;
-    --ink: #17211d;
-    --muted: #5a6963;
-    --line: #d3dad5;
-    --accent: #0c6654;
-    --accent-ink: #ffffff;
-    --accent-soft: #e0efe9;
-    --font-display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
-    --font-body: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+    --page: #eef3f8;
+    --card: #ffffff;
+    --ink: #1c2733;
+    --muted: #5b6b7c;
+    --line: #d9e2ec;
+    --blue: #0a66c2;
+    --blue-deep: #084c93;
+    --blue-soft: #e8f1fb;
+    --on-blue: #ffffff;
+    --ok: #0b7a4b;
+    --font-display: "Plus Jakarta Sans", "Segoe UI", system-ui, sans-serif;
+    --font-body: "Source Sans 3", "Segoe UI", system-ui, sans-serif;
     --font-mono: "IBM Plex Mono", ui-monospace, Consolas, monospace;
     color-scheme: light;
-  }
-  @media (prefers-color-scheme: dark) {
-    :root:not([data-theme="light"]) {
-      --paper: #101614;
-      --panel: #18211e;
-      --ink: #e7eeea;
-      --muted: #9aaba4;
-      --line: #2c3833;
-      --accent: #58c9ae;
-      --accent-ink: #06231c;
-      --accent-soft: #1b322b;
-      color-scheme: dark;
-    }
-  }
-  :root[data-theme="dark"] {
-    --paper: #101614;
-    --panel: #18211e;
-    --ink: #e7eeea;
-    --muted: #9aaba4;
-    --line: #2c3833;
-    --accent: #58c9ae;
-    --accent-ink: #06231c;
-    --accent-soft: #1b322b;
-    color-scheme: dark;
   }
 
   * { box-sizing: border-box; }
   html, body { margin: 0; }
   body {
-    background: var(--paper);
+    background: var(--page);
     color: var(--ink);
     font-family: var(--font-body);
-    font-size: 16px;
-    line-height: 1.5;
+    font-size: 17px;
+    line-height: 1.45;
   }
-  main {
-    max-width: 720px;
+  p, h1, h2, h3 { margin: 0; }
+
+  .band { background: var(--blue); color: var(--on-blue); }
+  .band-in {
+    max-width: 1120px;
     margin: 0 auto;
-    padding: 32px 20px 56px;
+    padding: 26px 24px 28px;
     display: flex;
-    flex-direction: column;
-    gap: 20px;
+    flex-wrap: wrap;
+    gap: 14px 24px;
+    align-items: flex-end;
+    justify-content: space-between;
   }
-  header { display: flex; flex-direction: column; gap: 6px; }
+  .band-text { display: flex; flex-direction: column; gap: 6px; }
   h1 {
     font-family: var(--font-display);
+    font-weight: 800;
     font-size: 30px;
     line-height: 1.15;
-    margin: 0;
+    letter-spacing: -0.01em;
     text-wrap: balance;
+  }
+  .band p { max-width: 58ch; opacity: .92; }
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255, 255, 255, .16);
+    border: 1px solid rgba(255, 255, 255, .35);
+    border-radius: 999px;
+    padding: 6px 14px;
+    font-size: 15px;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  .pill i { width: 8px; height: 8px; border-radius: 50%; background: #7be0ad; display: block; }
+
+  main {
+    max-width: 1120px;
+    margin: 0 auto;
+    padding: 24px 24px 56px;
+    display: grid;
+    grid-template-columns: minmax(300px, 380px) minmax(0, 1fr);
+    gap: 24px;
+    align-items: start;
+  }
+  .left { position: sticky; top: 20px; display: flex; flex-direction: column; gap: 16px; }
+  .right { display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+
+  .card {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    box-shadow: 0 1px 2px rgba(16, 42, 67, .05);
+    padding: 20px;
   }
   h2 {
     font-family: var(--font-display);
-    font-size: 19px;
+    font-weight: 700;
+    font-size: 18px;
     line-height: 1.25;
-    margin: 0;
-    text-wrap: balance;
   }
-  h3 { font-size: 15px; font-weight: 600; margin: 0; }
-  p { margin: 0; }
-  .lede { color: var(--muted); max-width: 60ch; }
-  .hint { color: var(--muted); font-size: 14px; }
+  .card-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 16px; }
+  .section-title { padding: 2px 4px 0; display: flex; align-items: baseline; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+  .hint { color: var(--muted); font-size: 15px; }
 
-  .panel {
-    background: var(--panel);
-    border: 1px solid var(--line);
-    border-radius: 10px;
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
-  }
-
-  .fields { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .fields { display: flex; flex-direction: column; gap: 13px; }
+  .pair { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
   .field { display: flex; flex-direction: column; gap: 5px; min-width: 0; }
-  .field.wide { grid-column: 1 / -1; }
-  label { font-size: 13px; font-weight: 600; }
+  label { font-size: 14px; font-weight: 600; }
   label span { font-weight: 400; color: var(--muted); }
   input {
     font: inherit;
     color: var(--ink);
-    background: var(--paper);
-    border: 1px solid var(--line);
-    border-radius: 6px;
-    padding: 9px 11px;
+    background: #ffffff;
+    border: 1px solid #b8c4d1;
+    border-radius: 8px;
+    padding: 9px 12px;
     width: 100%;
   }
-  input::placeholder { color: var(--muted); opacity: .75; }
-  input:focus-visible, .btn:focus-visible {
-    outline: 2px solid var(--accent);
-    outline-offset: 2px;
+  input::placeholder { color: #8a98a8; }
+  input:hover { border-color: #8497ab; }
+  input:focus-visible {
+    outline: none;
+    border-color: var(--blue);
+    box-shadow: 0 0 0 3px rgba(10, 102, 194, .2);
   }
+  .guess { margin-top: 12px; }
+  .guess:empty { display: none; }
 
-  .searches { display: flex; flex-direction: column; }
-  .search {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    padding: 16px 0;
-    border-top: 1px solid var(--line);
-  }
-  .search:first-child { border-top: 0; padding-top: 0; }
-  .search:last-child { padding-bottom: 0; }
-  .search-head { display: flex; gap: 10px; align-items: baseline; flex-wrap: wrap; }
-  .rank {
-    font-family: var(--font-mono);
-    font-size: 13px;
-    font-weight: 500;
-    color: var(--accent);
-    background: var(--accent-soft);
-    border-radius: 4px;
-    padding: 2px 8px;
-    flex: none;
-  }
-  .search.off h3, .search.off .rank { opacity: .55; }
-  .query {
-    font-family: var(--font-mono);
-    font-size: 13px;
-    background: var(--paper);
-    border: 1px dashed var(--line);
-    border-radius: 6px;
-    padding: 8px 11px;
-    overflow-wrap: anywhere;
-    color: var(--ink);
-  }
-  .search.off .query { color: var(--muted); }
-
-  .actions { display: flex; flex-wrap: wrap; gap: 10px; }
   .btn {
     font: inherit;
     font-weight: 600;
-    font-size: 15px;
+    font-size: 16px;
     display: inline-flex;
     align-items: center;
+    justify-content: center;
     gap: 6px;
-    padding: 8px 14px;
-    border-radius: 6px;
-    border: 1px solid var(--accent);
-    background: var(--accent);
-    color: var(--accent-ink);
+    padding: 8px 18px;
+    border-radius: 999px;
+    border: 1.5px solid var(--blue);
+    background: var(--blue);
+    color: var(--on-blue);
     text-decoration: none;
     cursor: pointer;
+    transition: background-color .15s, border-color .15s;
   }
-  .btn.ghost { background: transparent; color: var(--accent); }
-  .btn.quiet { background: transparent; color: var(--ink); border-color: var(--line); }
-  .btn[aria-disabled="true"] { opacity: .45; cursor: not-allowed; pointer-events: none; }
-  .btn .ext { font-size: 13px; opacity: .8; }
+  .btn:hover { background: var(--blue-deep); border-color: var(--blue-deep); }
+  .btn.outline { background: #ffffff; color: var(--blue); }
+  .btn.outline:hover { background: var(--blue-soft); border-color: var(--blue); }
+  .btn.plain { background: transparent; color: var(--muted); border-color: #b8c4d1; padding: 6px 14px; font-size: 15px; }
+  .btn.plain:hover { background: var(--page); color: var(--ink); border-color: #8497ab; }
+  .btn:focus-visible { outline: 3px solid rgba(10, 102, 194, .35); outline-offset: 2px; }
+  .btn[aria-disabled="true"] {
+    background: #e9eef3;
+    border-color: #e9eef3;
+    color: #93a1b0;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+  .btn .ext { font-size: 14px; }
 
-  ul.checks { margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 4px; font-size: 14px; }
-  .status { font-size: 14px; color: var(--accent); }
-
-  footer {
+  .search { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 4px 14px; padding: 18px 20px; }
+  .num {
+    grid-row: 1 / span 4;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: var(--blue);
+    color: var(--on-blue);
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 16px;
     display: flex;
-    flex-wrap: wrap;
-    gap: 12px;
     align-items: center;
-    justify-content: space-between;
-    color: var(--muted);
-    font-size: 14px;
+    justify-content: center;
   }
-  footer p { max-width: 52ch; }
+  .search-head { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; min-height: 34px; }
+  h3 { font-family: var(--font-display); font-weight: 700; font-size: 16.5px; line-height: 1.3; }
+  .tag {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ok);
+    background: #e3f5ec;
+    border-radius: 999px;
+    padding: 2px 10px;
+  }
+  .query {
+    font-family: var(--font-mono);
+    font-size: 13.5px;
+    line-height: 1.5;
+    background: var(--blue-soft);
+    border-radius: 8px;
+    padding: 9px 12px;
+    margin: 8px 0 12px;
+    overflow-wrap: anywhere;
+    color: #17385c;
+  }
+  .actions { display: flex; flex-wrap: wrap; gap: 10px; }
 
-  @media (max-width: 520px) {
-    .fields { grid-template-columns: 1fr; }
-    h1 { font-size: 25px; }
-    .panel { padding: 16px; }
+  .search.off { background: #f8fafc; box-shadow: none; }
+  .search.off .num { background: #c5d0dc; }
+  .search.off h3 { color: var(--muted); }
+  .search.off .query { background: #eef2f6; color: #7b8a9a; }
+
+  ul.checks { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 9px; font-size: 16px; }
+  ul.checks li { display: grid; grid-template-columns: 20px 1fr; gap: 8px; }
+  ul.checks li::before { content: "\2713"; color: var(--blue); font-weight: 700; }
+
+  .privacy { padding: 0 4px; }
+  .status { color: var(--ok); font-weight: 600; }
+
+  @media (max-width: 860px) {
+    main { grid-template-columns: 1fr; padding: 18px 16px 48px; }
+    .left { position: static; }
+    .band-in { padding: 22px 16px; }
+    h1 { font-size: 26px; }
   }
+  @media (max-width: 420px) {
+    .pair { grid-template-columns: 1fr; }
+    .search { grid-template-columns: 1fr; }
+    .num { grid-row: auto; }
+  }
+  @media (prefers-reduced-motion: reduce) { .btn { transition: none; } }
 </style>
 </head>
 <body>
-<main>
-  <header>
-    <h1>Lead LinkedIn Finder</h1>
-    <p class="lede">Enter what the lead form gave you. The searches below look only at LinkedIn profiles, most precise first. The more fields you fill, the better the match.</p>
-  </header>
-
-  <section class="panel" aria-labelledby="lead-h">
-    <h2 id="lead-h">Lead details</h2>
-    <div class="fields">
-      <div class="field">
-        <label for="fullname">Full name</label>
-        <input id="fullname" type="text" placeholder="Rahul Sharma" autocomplete="off">
-      </div>
-      <div class="field">
-        <label for="email">Email <span>(optional)</span></label>
-        <input id="email" type="text" inputmode="email" placeholder="rahul.sharma92@gmail.com" autocomplete="off" spellcheck="false">
-      </div>
-      <div class="field">
-        <label for="company">Current company <span>(optional)</span></label>
-        <input id="company" type="text" placeholder="Infosys" autocomplete="off">
-      </div>
-      <div class="field">
-        <label for="role">Job title <span>(optional)</span></label>
-        <input id="role" type="text" placeholder="Data Analyst" autocomplete="off">
-      </div>
-      <div class="field">
-        <label for="college">College <span>(optional)</span></label>
-        <input id="college" type="text" placeholder="VIT Vellore" autocomplete="off">
-      </div>
-      <div class="field">
-        <label for="city">City <span>(optional)</span></label>
-        <input id="city" type="text" placeholder="Pune" autocomplete="off">
-      </div>
+<div class="band">
+  <div class="band-in">
+    <div class="band-text">
+      <h1>Lead LinkedIn Finder</h1>
+      <p>Enter what the lead form gave you and open the best LinkedIn profile search in one click.</p>
     </div>
-    <p class="hint" id="guessLine"></p>
-  </section>
+    <span class="pill"><i></i>Nothing is saved or sent</span>
+  </div>
+</div>
 
-  <section class="panel" aria-labelledby="s-h">
-    <h2 id="s-h">Searches</h2>
-    <div class="searches" id="searches"></div>
-  </section>
+<main>
+  <div class="left">
+    <section class="card" aria-labelledby="lead-h">
+      <div class="card-head">
+        <h2 id="lead-h">Lead details</h2>
+        <button class="btn plain" id="clearAll" type="button">Clear</button>
+      </div>
+      <div class="fields">
+        <div class="field">
+          <label for="fullname">Full name</label>
+          <input id="fullname" type="text" placeholder="Rahul Sharma" autocomplete="off">
+        </div>
+        <div class="field">
+          <label for="email">Email <span>(optional)</span></label>
+          <input id="email" type="text" inputmode="email" placeholder="rahul.sharma92@gmail.com" autocomplete="off" spellcheck="false">
+        </div>
+        <div class="pair">
+          <div class="field">
+            <label for="company">Company <span>(optional)</span></label>
+            <input id="company" type="text" placeholder="Infosys" autocomplete="off">
+          </div>
+          <div class="field">
+            <label for="role">Job title <span>(optional)</span></label>
+            <input id="role" type="text" placeholder="Data Analyst" autocomplete="off">
+          </div>
+        </div>
+        <div class="pair">
+          <div class="field">
+            <label for="college">College <span>(optional)</span></label>
+            <input id="college" type="text" placeholder="VIT Vellore" autocomplete="off">
+          </div>
+          <div class="field">
+            <label for="city">City <span>(optional)</span></label>
+            <input id="city" type="text" placeholder="Pune" autocomplete="off">
+          </div>
+        </div>
+      </div>
+      <p class="hint guess" id="guessLine"></p>
+    </section>
+    <p class="hint privacy">Details clear when you press Clear, close the tab, or leave the page idle for 2 minutes. <span class="status" id="status" role="status"></span></p>
+  </div>
 
-  <section class="panel" aria-labelledby="c-h">
-    <h2 id="c-h">Confirm it is the right person</h2>
-    <ul class="checks">
-      <li>City, company or college on the profile matches the lead form.</li>
-      <li>Digits in the email often show a birth or graduation year. Compare them with the education dates.</li>
-      <li>The profile link often contains the same handle as the email, such as /in/rahulsharma92.</li>
-      <li>Two or more of these agree: safe to call. Only the name matches: treat it as unconfirmed.</li>
-    </ul>
-  </section>
+  <div class="right">
+    <div class="section-title">
+      <h2>Searches</h2>
+      <p class="hint">Most precise first. More details filled in means a better match.</p>
+    </div>
+    <div class="right" id="searches"></div>
 
-  <footer>
-    <p>Nothing is saved or sent by this page. Details clear when you press Clear, close the tab, or leave the page idle for 2 minutes. <span class="status" id="status" role="status"></span></p>
-    <button class="btn quiet" id="clearAll" type="button">Clear lead</button>
-  </footer>
+    <section class="card" aria-labelledby="c-h">
+      <div class="card-head"><h2 id="c-h">Confirm it is the right person</h2></div>
+      <ul class="checks">
+        <li>City, company or college on the profile matches the lead form.</li>
+        <li>Digits in the email often show a birth or graduation year. Compare them with the education dates.</li>
+        <li>The profile link often contains the same handle as the email, such as /in/rahulsharma92.</li>
+        <li>Two or more of these agree: safe to call. Only the name matches: treat it as unconfirmed.</li>
+      </ul>
+    </section>
+  </div>
 </main>
 
 <script>
@@ -298,35 +341,28 @@
     var exact = name ? "intitle:" + q(name) : "";
     var list = [];
 
-    // 1. Exact name + where they work or studied
     var org = company && college ? "(" + q(company) + " OR " + q(college) + ")" : (company ? q(company) : (college ? q(college) : ""));
     list.push({
       title: "Exact name with company or college",
-      need: "Needs a name and a company or college.",
+      need: "Add a name and a company or college to use this.",
       example: SITE + ' intitle:"Rahul Sharma" ("Infosys" OR "VIT Vellore")',
-      query: name && org ? [SITE, exact, org, city].filter(Boolean).join(" ") : "",
-      engines: true
+      query: name && org ? [SITE, exact, org, city].filter(Boolean).join(" ") : ""
     });
 
-    // 2. Exact name + job title
     list.push({
       title: "Exact name with job title",
-      need: "Needs a name and a job title.",
+      need: "Add a name and a job title to use this.",
       example: SITE + ' intitle:"Rahul Sharma" "Data Analyst"',
-      query: name && role ? [SITE, exact, q(role), city].filter(Boolean).join(" ") : "",
-      engines: true
+      query: name && role ? [SITE, exact, q(role), city].filter(Boolean).join(" ") : ""
     });
 
-    // 3. First and last name in any order + city (India when no city)
     list.push({
       title: "Name in any order with city",
-      need: "Needs a name. Uses India when no city is given.",
+      need: "Add a name to use this. It uses India when no city is given.",
       example: SITE + ' intitle:Rahul intitle:Sharma "Pune"',
-      query: name ? [SITE, loose, q(city || "India")].join(" ") : "",
-      engines: true
+      query: name ? [SITE, loose, q(city || "India")].join(" ") : ""
     });
 
-    // 4. Email handle inside the profile link
     var toks = email ? handleTokens(email) : [];
     var local = email ? email.split("@")[0].replace(/\+.*$/, "") : "";
     var handleQ = "";
@@ -336,17 +372,15 @@
     }
     list.push({
       title: "Email handle in the profile link",
-      need: "Needs an email. Many people reuse their email handle as their LinkedIn link.",
+      need: "Add an email to use this. Many people reuse their email handle as their LinkedIn link.",
       example: SITE + ' (inurl:rahul inurl:sharma OR "rahul.sharma92")',
-      query: handleQ,
-      engines: true
+      query: handleQ
     });
 
-    // 5. LinkedIn's own people search
     var kw = [name, company || college || role, city].filter(Boolean).join(" ");
     list.push({
       title: "LinkedIn people search",
-      need: "Needs a name. You must be signed in to LinkedIn.",
+      need: "Add a name to use this. You must be signed in to LinkedIn.",
       example: "Rahul Sharma Infosys Pune",
       query: name ? kw : "",
       linkedin: true
@@ -355,9 +389,15 @@
     return { list: list, guess: guess, name: name };
   }
 
+  function el(tag, cls, text) {
+    var n = document.createElement(tag);
+    if (cls) n.className = cls;
+    if (text) n.textContent = text;
+    return n;
+  }
+
   function link(label, url, cls) {
-    var a = document.createElement("a");
-    a.className = "btn" + (cls ? " " + cls : "");
+    var a = el("a", "btn" + (cls ? " " + cls : ""));
     a.target = "_blank";
     a.rel = "noopener noreferrer";
     a.innerHTML = label + ' <span class="ext">↗</span>';
@@ -368,45 +408,37 @@
 
   function render() {
     var b = build();
+    var firstOn = -1;
+    b.list.forEach(function (s, i) { if (firstOn < 0 && s.query) firstOn = i; });
     box.textContent = "";
+
     b.list.forEach(function (s, i) {
-      var row = document.createElement("div");
-      row.className = "search" + (s.query ? "" : " off");
+      var row = el("section", "card search" + (s.query ? "" : " off"));
+      row.appendChild(el("div", "num", String(i + 1)));
 
-      var head = document.createElement("div");
-      head.className = "search-head";
-      var rank = document.createElement("span");
-      rank.className = "rank";
-      rank.textContent = String(i + 1);
-      var h = document.createElement("h3");
-      h.textContent = s.title;
-      head.appendChild(rank); head.appendChild(h);
+      var head = el("div", "search-head");
+      head.appendChild(el("h3", "", s.title));
+      if (i === firstOn) head.appendChild(el("span", "tag", "Start here"));
+      row.appendChild(head);
 
-      var need = document.createElement("p");
-      need.className = "hint";
-      need.textContent = s.need;
+      if (!s.query) row.appendChild(el("p", "hint", s.need));
+      row.appendChild(el("div", "query", s.query || "Example: " + s.example));
 
-      var query = document.createElement("div");
-      query.className = "query";
-      query.textContent = s.query || "Example: " + s.example;
-
-      var actions = document.createElement("div");
-      actions.className = "actions";
+      var actions = el("div", "actions");
       var enc = s.query ? encodeURIComponent(s.query) : "";
       if (s.linkedin) {
         actions.appendChild(link("Open on LinkedIn", enc ? "https://www.linkedin.com/search/results/people/?keywords=" + enc : ""));
       } else {
-        actions.appendChild(link("Google", enc ? "https://www.google.com/search?q=" + enc : ""));
-        actions.appendChild(link("Bing", enc ? "https://www.bing.com/search?q=" + enc : "", "ghost"));
+        actions.appendChild(link("Search on Google", enc ? "https://www.google.com/search?q=" + enc : ""));
+        actions.appendChild(link("Bing", enc ? "https://www.bing.com/search?q=" + enc : "", "outline"));
       }
-
-      row.appendChild(head); row.appendChild(need); row.appendChild(query); row.appendChild(actions);
+      row.appendChild(actions);
       box.appendChild(row);
     });
 
     guessLine.textContent = b.guess
       ? "No name typed, so the searches use a guess from the email: " + b.guess + ". Type the real name for better results."
-      : (b.name ? "" : "Type a name to switch the searches on.");
+      : "";
   }
 
   function hasData() {
